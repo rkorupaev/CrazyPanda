@@ -1,0 +1,35 @@
+.table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+.table td {
+  border-color: black;
+  border-style: solid;
+  border-width: 1px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  overflow: hidden;
+  padding: 10px 5px;
+  word-break: normal;
+  min-width: 70px;
+}
+
+.table th {
+  cursor: pointer;
+  border-color: black;
+  border-style: solid;
+  border-width: 2px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  overflow: hidden;
+  padding: 10px 5px;
+  word-break: normal;
+  min-width: 70px;
+}
+
+.table .table_column {
+  text-align: center;
+  vertical-align: middle;
+}

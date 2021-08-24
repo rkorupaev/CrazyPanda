@@ -78,7 +78,17 @@ const Table = (props) => {
 
     const onHeaderClick = (evt) => {
         const abbr = evt.target.abbr;
-        pageMockData.sort((a, b) => a.[abbr] - b.[abbr]);
+        pageMockData.sort((a, b) => {
+            if (typeof a.[abbr] === 'number' && typeof b.[abbr] === 'number') {
+                return a.[abbr] - b.[abbr];
+            } else if (typeof a.[abbr] === 'string' && typeof b.[abbr] === 'string') {
+                if (a.[abbr].toLowerCase() < b.[abbr].toLowerCase())
+                    return -1;
+                if (a.[abbr].toLowerCase() > b.[abbr].toLowerCase())
+                    return 1;
+                return 0;
+            }
+        });
         setData(pageMockData);
     }
 

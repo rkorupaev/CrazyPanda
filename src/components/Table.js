@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import styles from '../styles/Table.module.scss';
 
 const getRandomInt = (min, max) => {
@@ -65,18 +65,24 @@ for (let i = 0; i < 100; i++) {
 
 const USERS_PER_PAGE = 50;
 
-const onHeaderClick = (evt, array) => {
-    const test = evt.target.abbr;
-    array.sort((a, b) => a.[test] - b.[test]);
-    return array;
-}
-
 const Table = (props) => {
+
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        setData(mockData.slice((props.currentPage - 1) * USERS_PER_PAGE, props.currentPage * USERS_PER_PAGE));
+    }, [props.currentPage]);
 
     props.setPageCount(Math.ceil(mockData.length / USERS_PER_PAGE));
     const pageMockData = mockData.slice((props.currentPage - 1) * USERS_PER_PAGE, props.currentPage * USERS_PER_PAGE);
 
-    const pageArrayOfUSers = pageMockData.map(user => {
+    const onHeaderClick = (evt) => {
+        const abbr = evt.target.abbr;
+        pageMockData.sort((a, b) => a.[abbr] - b.[abbr]);
+        setData(pageMockData);
+    }
+
+    const pageArrayOfUSers = data.map(user => {
         return (
             <tr>
                 <td className={styles.table_column}>{user.id}</td>
@@ -93,7 +99,7 @@ const Table = (props) => {
             <thead>
             <tr>
                 {tableHeaders.map(header => <th className={styles.table_column}
-                                                onClick={(evt) => onHeaderClick(evt, mockData)}
+                                                onClick={(evt) => onHeaderClick(evt)}
                                                 abbr={header.abbr}>{header.header}</th>)}
             </tr>
             </thead>

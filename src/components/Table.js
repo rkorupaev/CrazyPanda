@@ -68,6 +68,9 @@ const USERS_PER_PAGE = 50;
 const Table = (props) => {
 
     const [data, setData] = useState([]);
+    const [clickedTarget, setClickedTarget] = useState(null);
+    const [sortedDown, setSortedDown] = useState(false);
+    const [count, setCount] = useState(1);
 
     useEffect(() => {
         setData(mockData.slice((props.currentPage - 1) * USERS_PER_PAGE, props.currentPage * USERS_PER_PAGE));
@@ -77,20 +80,50 @@ const Table = (props) => {
     const pageMockData = mockData.slice((props.currentPage - 1) * USERS_PER_PAGE, props.currentPage * USERS_PER_PAGE);
 
     const onHeaderClick = (evt) => {
-        const abbr = evt.target.abbr;
-        pageMockData.sort((a, b) => {
-            if (typeof a.[abbr] === 'number' && typeof b.[abbr] === 'number') {
-                return a.[abbr] - b.[abbr];
-            } else if (typeof a.[abbr] === 'string' && typeof b.[abbr] === 'string') {
-                if (a.[abbr].toLowerCase() < b.[abbr].toLowerCase())
-                    return -1;
-                if (a.[abbr].toLowerCase() > b.[abbr].toLowerCase())
-                    return 1;
-                return 0;
-            }
-        });
+
+        const sortData = () => {
+            const abbr = evt.target.abbr;
+            pageMockData.sort((a, b) => {
+                if (!sortedDown) {
+                    setSortedDown(true);
+                    if (typeof a.[abbr] === 'number' && typeof b.[abbr] === 'number') {
+                        return a.[abbr] - b.[abbr];
+
+                    } else if (typeof a.[abbr] === 'string' && typeof b.[abbr] === 'string') {
+                        if (a.[abbr].toLowerCase() < b.[abbr].toLowerCase())
+                            return -1;
+                        if (a.[abbr].toLowerCase() > b.[abbr].toLowerCase())
+                            return 1;
+                        return 0;
+                    }
+                } else {
+                    setSortedDown(false);
+                    if (typeof a.[abbr] === 'number' && typeof b.[abbr] === 'number') {
+                        return b.[abbr] - a.[abbr];
+                    } else if (typeof a.[abbr] === 'string' && typeof b.[abbr] === 'string') {
+                        if (b.[abbr].toLowerCase() < a.[abbr].toLowerCase())
+                            return -1;
+                        if (b.[abbr].toLowerCase() > a.[abbr].toLowerCase())
+                            return 1;
+                        return 0;
+                    }
+                }
+            });
+        }
+
+        if (clickedTarget !== evt.target) {
+            setSortedDown(false);
+            sortData();
+        } else {
+            sortData();
+        }
+
         setData(pageMockData);
+        setClickedTarget(evt.target);
     }
+    console.log(clickedTarget)
+    console.log(sortedDown)
+
 
     const pageArrayOfUSers = data.map(user => {
         return (

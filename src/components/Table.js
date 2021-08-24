@@ -1,8 +1,34 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import styles from '../styles/Table.module.scss';
-import Row from "./Row";
 
-const mockData = [
+const getRandomInt = (min, max) => {
+    return Math.floor(Math.random() * (max - min)) + min;
+}
+
+const tableHeaders = [
+    {
+        header: 'ID',
+        abbr: 'id'
+    },
+    {
+        header: 'Name',
+        abbr: 'name'
+    },
+    {
+        header: 'Nick',
+        abbr: 'nick'
+    },
+    {
+        header: 'Age',
+        abbr: 'age'
+    },
+    {
+        header: 'Lvl',
+        abbr: 'level'
+    },
+]
+
+let mockData = [
     {
         id: 1,
         name: 'Roman',
@@ -31,11 +57,26 @@ const mockData = [
         age: 23,
         level: 9999
     },
-]
+];
 
+for (let i = 0; i < 100; i++) {
+    mockData.push(mockData[getRandomInt(0, 4)])
+}
+
+const USERS_PER_PAGE = 50;
+
+const onHeaderClick = (evt, array) => {
+    const test = evt.target.abbr;
+    array.sort((a, b) => a.[test] - b.[test]);
+    return array;
+}
 
 const Table = (props) => {
-    const tableRowsArray = mockData.map(user => {
+
+    props.setPageCount(Math.ceil(mockData.length / USERS_PER_PAGE));
+    const pageMockData = mockData.slice((props.currentPage - 1) * USERS_PER_PAGE, props.currentPage * USERS_PER_PAGE);
+
+    const pageArrayOfUSers = pageMockData.map(user => {
         return (
             <tr>
                 <td className={styles.table_column}>{user.id}</td>
@@ -51,15 +92,13 @@ const Table = (props) => {
         <table className={styles.table}>
             <thead>
             <tr>
-                <th className={styles.table_column}>ID</th>
-                <th className={styles.table_column}>Name</th>
-                <th className={styles.table_column}>Nick Name</th>
-                <th className={styles.table_column}>Age</th>
-                <th className={styles.table_column}>Lvl</th>
+                {tableHeaders.map(header => <th className={styles.table_column}
+                                                onClick={(evt) => onHeaderClick(evt, mockData)}
+                                                abbr={header.abbr}>{header.header}</th>)}
             </tr>
             </thead>
             <tbody>
-            {tableRowsArray}
+            {pageArrayOfUSers}
             </tbody>
         </table>
     )

@@ -54,7 +54,7 @@ let mockData = [
         id: 9,
         name: 'Uin',
         nick: 'WWW',
-        age: 23,
+        age: 25,
         level: 9999
     },
     {
@@ -87,8 +87,14 @@ const Table = (props) => {
     }, [props.currentPage]);
 
     useEffect(() => {
-
-            setFilteredData(data.filter(user => user.name.toLowerCase().includes(props.inputText.toLowerCase())));
+        setFilteredData(data.filter(user => {
+                for (const prop of Object.keys(user)) {
+                    if (user[prop].toString().toLowerCase().includes(props.inputText.toString().toLowerCase())) {
+                        return true;
+                    }
+                }
+            }
+        ));
     }, [props.inputText, data]);
 
     const onHeaderClick = (evt) => {
@@ -98,24 +104,24 @@ const Table = (props) => {
             filteredData.sort((a, b) => {
                 if (!sortedDown) {
                     setSortedDown(true);
-                    if (typeof a.[abbr] === 'number' && typeof b.[abbr] === 'number') {
-                        return a.[abbr] - b.[abbr];
+                    if (typeof a[abbr] === 'number' && typeof b[abbr] === 'number') {
+                        return a[abbr] - b[abbr];
 
-                    } else if (typeof a.[abbr] === 'string' && typeof b.[abbr] === 'string') {
-                        if (a.[abbr].toLowerCase() < b.[abbr].toLowerCase())
+                    } else if (typeof a[abbr] === 'string' && typeof b[abbr] === 'string') {
+                        if (a[abbr].toLowerCase() < b[abbr].toLowerCase())
                             return -1;
-                        if (a.[abbr].toLowerCase() > b.[abbr].toLowerCase())
+                        if (a[abbr].toLowerCase() > b[abbr].toLowerCase())
                             return 1;
                         return 0;
                     }
                 } else {
                     setSortedDown(false);
-                    if (typeof a.[abbr] === 'number' && typeof b.[abbr] === 'number') {
-                        return b.[abbr] - a.[abbr];
-                    } else if (typeof a.[abbr] === 'string' && typeof b.[abbr] === 'string') {
-                        if (b.[abbr].toLowerCase() < a.[abbr].toLowerCase())
+                    if (typeof a[abbr] === 'number' && typeof b[abbr] === 'number') {
+                        return b[abbr] - a[abbr];
+                    } else if (typeof a[abbr] === 'string' && typeof b[abbr] === 'string') {
+                        if (b[abbr].toLowerCase() < a[abbr].toLowerCase())
                             return -1;
-                        if (b.[abbr].toLowerCase() > a.[abbr].toLowerCase())
+                        if (b[abbr].toLowerCase() > a[abbr].toLowerCase())
                             return 1;
                         return 0;
                     }

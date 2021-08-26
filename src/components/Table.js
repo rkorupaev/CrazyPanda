@@ -57,33 +57,45 @@ let mockData = [
         age: 23,
         level: 9999
     },
+    {
+        id: 11,
+        name: 'Uix',
+        nick: 'WWW2',
+        age: 23,
+        level: 9999
+    },
 ];
 
 for (let i = 0; i < 100; i++) {
-    mockData.push(mockData[getRandomInt(0, 4)])
+    mockData.push(mockData[getRandomInt(0, 5)])
 }
 
 const USERS_PER_PAGE = 50;
 
 const Table = (props) => {
 
+    props.setPageCount(Math.ceil(mockData.length / USERS_PER_PAGE));
+
     const [data, setData] = useState([]);
     const [clickedTarget, setClickedTarget] = useState(null);
     const [sortedDown, setSortedDown] = useState(false);
-    const [count, setCount] = useState(1);
+    const [filteredData, setFilteredData] = useState([]);
+
 
     useEffect(() => {
         setData(mockData.slice((props.currentPage - 1) * USERS_PER_PAGE, props.currentPage * USERS_PER_PAGE));
     }, [props.currentPage]);
 
-    props.setPageCount(Math.ceil(mockData.length / USERS_PER_PAGE));
-    const pageMockData = mockData.slice((props.currentPage - 1) * USERS_PER_PAGE, props.currentPage * USERS_PER_PAGE);
+    useEffect(() => {
+
+            setFilteredData(data.filter(user => user.name.toLowerCase().includes(props.inputText.toLowerCase())));
+    }, [props.inputText, data]);
 
     const onHeaderClick = (evt) => {
 
         const sortData = () => {
             const abbr = evt.target.abbr;
-            pageMockData.sort((a, b) => {
+            filteredData.sort((a, b) => {
                 if (!sortedDown) {
                     setSortedDown(true);
                     if (typeof a.[abbr] === 'number' && typeof b.[abbr] === 'number') {
@@ -118,14 +130,11 @@ const Table = (props) => {
             sortData();
         }
 
-        setData(pageMockData);
+        setData(filteredData);
         setClickedTarget(evt.target);
     }
-    console.log(clickedTarget)
-    console.log(sortedDown)
 
-
-    const pageArrayOfUSers = data.map(user => {
+    const pageArrayOfUSers = filteredData.map(user => {
         return (
             <tr>
                 <td className={styles.table_column}>{user.id}</td>
